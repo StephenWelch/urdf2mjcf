@@ -1,4 +1,5 @@
-from .core import Element, RosPack
+# from .core import Element, RosPack
+from .core import Element
 from .core import (
     resolve_ros_uris,
     add_mujoco_node,
