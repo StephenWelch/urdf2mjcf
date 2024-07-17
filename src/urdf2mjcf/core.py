@@ -11,6 +11,7 @@ from urllib.parse import urlparse
 
 from defusedxml.ElementTree import parse
 from mujoco import MjModel, mj_saveLastXML
+# from rospkg import RosPack
 
 
 def _parse_element(source: Union[str, Path, IO[AnyStr], None], **kwargs) -> Element:
