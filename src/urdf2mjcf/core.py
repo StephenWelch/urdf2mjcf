@@ -11,7 +11,6 @@ from urllib.parse import urlparse
 
 from defusedxml.ElementTree import parse
 from mujoco import MjModel, mj_saveLastXML
-from rospkg import RosPack
 
 
 def _parse_element(source: Union[str, Path, IO[AnyStr], None], **kwargs) -> Element:
@@ -85,39 +84,39 @@ def add_mujoco_node(urdf: Element, mujoco_node: Element = None) -> None:
     size_node = SubElement(new_mujoco_node, "size", size_attrib)
 
 
-def abspath_from_ros_uri(uri: str, rospack: RosPack = None) -> str:
-    """Parse a ROS package URI into an absolute path"""
-    rospack = RosPack() if rospack is None else rospack
+# def abspath_from_ros_uri(uri: str, rospack: RosPack = None) -> str:
+#     """Parse a ROS package URI into an absolute path"""
+#     rospack = RosPack() if rospack is None else rospack
 
-    scheme, netloc, path, *_ = urlparse(uri)
+#     scheme, netloc, path, *_ = urlparse(uri)
 
-    assert scheme == "package", f"Got URI that is not of scheme 'package': {scheme}"
+#     assert scheme == "package", f"Got URI that is not of scheme 'package': {scheme}"
 
-    package = Path(rospack.get_path(netloc))
-    relative_path = Path(path if path[0] != "/" else path[1:])
+#     package = Path(rospack.get_path(netloc))
+#     relative_path = Path(path if path[0] != "/" else path[1:])
 
-    assert (
-        not relative_path.is_absolute()
-    ), f"Asset path is not relative: {relative_path}"
+#     assert (
+#         not relative_path.is_absolute()
+#     ), f"Asset path is not relative: {relative_path}"
 
-    assert (
-        package / relative_path
-    ).is_absolute(), f"Resolved path is not absolute: {package / relative_path}"
+#     assert (
+#         package / relative_path
+#     ).is_absolute(), f"Resolved path is not absolute: {package / relative_path}"
 
-    return str(package / relative_path)
+#     return str(package / relative_path)
 
 
-def resolve_ros_uris(urdf: Element, rospack: RosPack = None) -> None:
-    """Resolve all collision mesh ROS package URIs to absolute paths"""
-    for mesh_node in urdf.findall(".//collision/*/mesh[@filename]"):
-        ros_uri = mesh_node.get("filename", None)
-        assert (
-            ros_uri is not None
-        ), f"Mesh node without filename: '{mesh_node.tag}' : {mesh_node.attrib}"
+# def resolve_ros_uris(urdf: Element, rospack: RosPack = None) -> None:
+#     """Resolve all collision mesh ROS package URIs to absolute paths"""
+#     for mesh_node in urdf.findall(".//collision/*/mesh[@filename]"):
+#         ros_uri = mesh_node.get("filename", None)
+#         assert (
+#             ros_uri is not None
+#         ), f"Mesh node without filename: '{mesh_node.tag}' : {mesh_node.attrib}"
 
-        absolute_path = abspath_from_ros_uri(ros_uri, rospack)
+#         absolute_path = abspath_from_ros_uri(ros_uri, rospack)
 
-        mesh_node.set("filename", absolute_path)
+#         mesh_node.set("filename", absolute_path)
 
 
 def populate_sensors(mjcf: Element, sensor_config: Element) -> None:
